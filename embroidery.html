@@ -415,9 +415,8 @@
                 display: none !important;
             }
             
-            /* *** MODIFIED: Added rules for better printing *** */
             thead {
-                display: table-header-group; /* Ensures the header repeats on each printed page */
+                display: table-header-group; 
             }
             
             table, th, td {
@@ -426,9 +425,9 @@
             }
 
             th {
-                font-weight: bold; /* Makes header text bold for clarity */
-                color: black !important; /* Ensures header text is black and visible */
-                background-color: #f0f0f0 !important; /* Adds a light background to the header */
+                font-weight: bold; 
+                color: black !important;
+                background-color: #f0f0f0 !important;
             }
 
             h2 {
@@ -537,7 +536,7 @@
             </div>
         </div>
 
-        <!-- Page 2: Report Page (No change here) -->
+        <!-- Page 2: Report Page -->
         <div id="reportPage" class="report-page">
             <h2>FAKHRUDDIN TEXTILE MILLS LTD</h2>
             <h3>Kewa,Sreepur,Gazipur</h3>
@@ -576,10 +575,14 @@
                         <label for="filterStyle">Filter by Style:</label>
                         <input type="text" id="filterStyle" placeholder="Enter Style">
                     </div>
-                    <!-- *** MODIFIED: New filter for Buyer added *** -->
                     <div class="filter-item">
                         <label for="filterBuyer">Filter by Buyer:</label>
                         <input type="text" id="filterBuyer" placeholder="Enter Buyer">
+                    </div>
+                    <!-- *** MODIFIED: New filter for Cutting Number added *** -->
+                    <div class="filter-item">
+                        <label for="filterCutNo">Filter by Cutting No:</label>
+                        <input type="text" id="filterCutNo" placeholder="Enter Cutting No">
                     </div>
                     <div class="filter-buttons">
                         <button class="btn btn-primary" onclick="filterReports()">Filter</button>
@@ -660,7 +663,7 @@
         </div>
     </div>
 
-    <!-- *** MODIFIED: Available Styles Modal with Filters *** -->
+    <!-- Available Styles Modal (No change here) -->
     <div id="availableStylesModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -668,7 +671,6 @@
                 <span class="close-btn" onclick="document.getElementById('availableStylesModal').style.display='none'">&times;</span>
             </div>
             
-            <!-- *** NEW: Filter section added *** -->
             <div class="filter-container" style="margin-bottom: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 8px;">
                 <input type="text" id="modalFilterBuyer" placeholder="Filter by Buyer..." style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
                 <input type="text" id="modalFilterStyle" placeholder="Filter by Style..." style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
@@ -865,7 +867,6 @@
         });
     }
 
-    // --- MODIFIED: Load data first, then call display function ---
     async function loadAndShowAvailableStyles() {
         const modal = document.getElementById('availableStylesModal');
         const body = document.getElementById('availableStylesBody');
@@ -901,7 +902,6 @@
             
             allAvailableItems = availableItems.sort((a, b) => a.style.localeCompare(b.style));
             
-            // Now display the items
             displayAvailableItems();
 
         } catch (error) {
@@ -911,7 +911,6 @@
         }
     }
 
-    // --- NEW: Function to display/filter available items ---
     function displayAvailableItems() {
         const body = document.getElementById('availableStylesBody');
         const footer = document.getElementById('availableStylesFooter');
@@ -958,7 +957,6 @@
         `;
     }
 
-    // --- NEW: Function to clear filters in the modal ---
     function clearAvailableItemsFilter() {
         document.getElementById('modalFilterBuyer').value = '';
         document.getElementById('modalFilterStyle').value = '';
@@ -1031,10 +1029,11 @@
         const startDate = document.getElementById('filterStartDate').value;
         const endDate = document.getElementById('filterEndDate').value;
         const filterStyle = document.getElementById('filterStyle').value.trim().toLowerCase();
-        const filterBuyer = document.getElementById('filterBuyer').value.trim().toLowerCase(); // Get buyer value
+        const filterBuyer = document.getElementById('filterBuyer').value.trim().toLowerCase();
+        const filterCutNo = document.getElementById('filterCutNo').value.trim().toLowerCase(); // Get Cutting No value
         
-        if (!startDate && !endDate && !filterStyle && !filterBuyer) { // Check buyer value
-            showToast('Please select a date range or enter a style/buyer to filter.', 'warning');
+        if (!startDate && !endDate && !filterStyle && !filterBuyer && !filterCutNo) { // Check Cutting No value
+            showToast('Please select a date range or enter a style/buyer/cutting no to filter.', 'warning');
             return;
         }
 
@@ -1072,6 +1071,13 @@
                     report.buyer.toLowerCase().includes(filterBuyer)
                 );
             }
+
+            // Client-side filtering for Cutting Number
+            if (filterCutNo) {
+                reports = reports.filter(report =>
+                    report.cutNo.toLowerCase().includes(filterCutNo)
+                );
+            }
             
             displayReports(reports);
             updateGrandTotal(reports);
@@ -1089,7 +1095,8 @@
         document.getElementById('filterStartDate').value = '';
         document.getElementById('filterEndDate').value = '';
         document.getElementById('filterStyle').value = '';
-        document.getElementById('filterBuyer').value = ''; // Clear buyer field
+        document.getElementById('filterBuyer').value = '';
+        document.getElementById('filterCutNo').value = ''; // Clear Cutting No field
         loadReports();
         showToast('Filter cleared.');
     }
