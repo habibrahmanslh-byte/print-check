@@ -162,7 +162,7 @@
                 grid-template-columns: repeat(8, 1fr) !important; 
                 gap: 5px !important;
                 width: 100% !important;
-                margin-top: 15px !important;
+                margin-top: 20px !important;
                 padding-top: 8px !important;
                 font-size: 7px !important;
                 font-weight: bold !important;
@@ -174,6 +174,21 @@
                 border-top: 1px solid #000 !important; 
                 padding-top: 3px !important;
                 text-align: center !important;
+                position: relative !important; /* Important for absolute positioning of name */
+            }
+
+            /* --- UPDATED SIGNATURE NAME STYLE --- */
+            .signature-name {
+                display: block !important;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 10px !important;
+                font-weight: bold !important;
+                position: absolute !important;
+                top: -14px !important; /* Moves name above the border line */
+                left: 0 !important;
+                width: 100% !important;
+                text-align: center !important;
+                background-color: transparent !important;
             }
             
             /* Prevent page breaks inside rows */
@@ -355,9 +370,17 @@
             <form id="formPage2">
                 <input type="hidden" id="editDocId" value=""> 
                 
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-gray-600">Cutt / No</label>
-                    <input type="text" id="cuttNo" required class="w-full border rounded p-2">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600">Cutt / No</label>
+                        <input type="text" id="cuttNo" required class="w-full border rounded p-2">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600">AQC Name</label>
+                        <select id="aqcName" class="dynamic-select w-full border rounded p-2 bg-white">
+                            <option value="">Select AQC</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="mb-2 grid grid-cols-12 gap-2 text-xs font-bold bg-gray-100 p-2 rounded text-center">
@@ -413,11 +436,12 @@
             <!-- Filters -->
             <div class="no-print bg-white p-4 shadow rounded mb-4">
                 <h3 class="font-bold mb-2">Filters & Actions</h3>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-2">
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mb-2">
                     <input type="date" id="filterDateFrom" class="border p-1 rounded text-sm">
                     <input type="date" id="filterDateTo" class="border p-1 rounded text-sm">
                     <input type="text" id="filterBuyer" placeholder="Buyer" class="border p-1 rounded text-sm">
                     <input type="text" id="filterStyle" placeholder="Style" class="border p-1 rounded text-sm">
+                    <input type="text" id="filterTable" placeholder="Table No" class="border p-1 rounded text-sm">
                     <input type="text" id="filterCutt" placeholder="Cutt/No" class="border p-1 rounded text-sm">
                 </div>
                 <div class="flex gap-2 flex-wrap">
@@ -462,9 +486,12 @@
                     </table>
                 </div>
 
-                <!-- SIGNATURE SECTION (Updated: One Line, 8 Columns, Print Only) -->
+                <!-- SIGNATURE SECTION (Updated: AQC Name Above Line) -->
                 <div id="signature-footer" class="text-center text-[10px] font-bold">
-                    <div class="mt-8">AQC</div>
+                    <div class="mt-8">
+                        <span id="printAqcSig" class="signature-name"></span>
+                        AQC
+                    </div>
                     <div class="mt-8">QC</div>
                     <div class="mt-8">INPUT RESPONSIBLE</div>
                     <div class="mt-8">SR.EXCUTIVE QA</div>
@@ -488,6 +515,7 @@
                         <option value="buyer">Buyer List</option>
                         <option value="item">Item List</option>
                         <option value="tableNo">Table List</option>
+                        <option value="aqc">AQC List</option>
                     </select>
                     
                     <div class="flex gap-2 mb-4">
@@ -549,7 +577,8 @@
         const defaultDropdowns = {
             buyer: ["M&S", "PUMA", "SEIDEN STICKER", "SANMAR CANADA", "OUTER STUFF", "LAHALLE", "PEPCO", "E.FAMILY", "RIDGLINE", "GB"],
             item: ["T-shirt", "Pant", "Tank-Top", "Jacket", "Towser"],
-            tableNo: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+            tableNo: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+            aqc: ["Mamun", "Habib 4th", "Humayun", "Apple", "Habib"]
         };
 
         // --- Initialize ---
@@ -573,19 +602,23 @@
                 populateSelect("buyer", data.buyer);
                 populateSelect("item", data.item);
                 populateSelect("tableNo", data.tableNo || defaultDropdowns.tableNo);
+                populateSelect("aqcName", data.aqc || defaultDropdowns.aqc);
             } catch (e) {
                 console.error("Error loading dropdowns:", e);
                 // Fallback
                 populateSelect("buyer", defaultDropdowns.buyer);
                 populateSelect("item", defaultDropdowns.item);
                 populateSelect("tableNo", defaultDropdowns.tableNo);
+                populateSelect("aqcName", defaultDropdowns.aqc);
             }
         }
 
         function populateSelect(id, list) {
             const sel = document.getElementById(id);
             if (!list) list = []; 
-            sel.innerHTML = `<option value="">Select ${id.charAt(0).toUpperCase() + id.slice(1)}</option>`;
+            // Keep default option name correct based on ID
+            let label = id === 'aqcName' ? "AQC" : (id === 'tableNo' ? "Table" : id.charAt(0).toUpperCase() + id.slice(1));
+            sel.innerHTML = `<option value="">Select ${label}</option>`;
             list.forEach(item => {
                 const opt = document.createElement("option");
                 opt.value = item;
@@ -888,6 +921,7 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
             const cuttNo = document.getElementById('cuttNo').value;
+            const aqcName = document.getElementById('aqcName').value;
             const remarks = document.getElementById('remarks').value;
             const editId = document.getElementById('editDocId').value; 
 
@@ -910,6 +944,7 @@
             const finalData = {
                 ...window.formData,
                 cuttNo: cuttNo,
+                aqcName: aqcName,
                 remarks: remarks,
                 sizeSetDetails: sizeSetDetails,
                 details: comparisonDetails,
@@ -937,6 +972,7 @@
         window.loadReport = async function() {
             const tbody = document.querySelector('#reportTable tbody');
             const thEdit = document.querySelector('.edit-col');
+            const aqcSigSlot = document.getElementById('printAqcSig');
             
             if(isEditMode) thEdit.classList.remove('hidden');
             else thEdit.classList.add('hidden');
@@ -956,6 +992,7 @@
                 const fBuyer = document.getElementById('filterBuyer').value.toLowerCase();
                 const fStyle = document.getElementById('filterStyle').value.toLowerCase();
                 const fCutt = document.getElementById('filterCutt').value.toLowerCase();
+                const fTable = document.getElementById('filterTable').value.toLowerCase();
                 const fDateFrom = document.getElementById('filterDateFrom').value;
                 const fDateTo = document.getElementById('filterDateTo').value;
 
@@ -964,35 +1001,39 @@
                     if(fBuyer && !item.buyer.toLowerCase().includes(fBuyer)) match = false;
                     if(fStyle && !item.style.toLowerCase().includes(fStyle)) match = false;
                     if(fCutt && !item.cuttNo.toLowerCase().includes(fCutt)) match = false;
+                    if(fTable && !item.tableNo.toLowerCase().includes(fTable)) match = false;
                     if(fDateFrom && item.date < fDateFrom) match = false;
                     if(fDateTo && item.date > fDateTo) match = false;
                     return match;
                 });
 
                 tbody.innerHTML = '';
+                aqcSigSlot.innerText = ''; // Reset Signature
+
                 if(filteredData.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="15">No data found</td></tr>';
                     return;
                 }
 
+                // Set AQC Signature from the first record found (assuming printing batch)
+                // This logic ensures only the AQC Name for this specific report is shown.
+                if(filteredData.length > 0 && filteredData[0].aqcName) {
+                    aqcSigSlot.innerText = filteredData[0].aqcName;
+                }
+
                 filteredData.forEach(row => {
                     const formatList = (list) => {
                         if(!list || !Array.isArray(list)) return '-';
-                        return list.map(d => `<span class="single-line-content"><b>${d.part}:</b> ${d.val || d.completeMmt || '-'}</span>`).join('<br>'); // Separator removed here
+                        return list.map(d => `<span class="single-line-content"><b>${d.part}:</b> ${d.val || d.completeMmt || '-'}</span>`).join('<br>');
                     };
 
                     const sizeSetHTML = formatList(row.sizeSetDetails);
                     const completeMmtHTML = formatList(row.completeMmtDetails);
-                    let patternMmtHTML = row.details ? row.details.map(d => `<span class="single-line-content"><b>${d.part}:</b> ${d.patternMmt}</span>`).join('<br>') : '-'; // Separator removed here
+                    let patternMmtHTML = row.details ? row.details.map(d => `<span class="single-line-content"><b>${d.part}:</b> ${d.patternMmt}</span>`).join('<br>') : '-';
                     
-                    // --- MODIFIED SECTION: Handle Cutting Column specifically to remove signs ---
-                    
-                    // Standard panel HTML (for Print or general use)
                     let printPanelHTML = row.details ? row.details.map(d => `<span class="single-line-content"><b>${d.part}:</b> ${d.panelVals}</span>`).join('<br>') : '-';
                     
-                    // Cleaned panel HTML for Cutting (removes (+), (-), (+/-) from Part Name)
                     let cuttingPanelHTML = row.details ? row.details.map(d => {
-                        // Remove specific signs for display in Cutting column only
                         let cleanPart = d.part.replace(' (+)', '').replace(' (-)', '').replace(' (+/-)', '');
                         return `<span class="single-line-content"><b>${cleanPart}:</b> ${d.panelVals}</span>`;
                     }).join('<br>') : '-';
@@ -1000,8 +1041,6 @@
                     let cuttingCol = row.processStage === 'Cutting' ? cuttingPanelHTML : '-';
                     let printCol = row.processStage === 'Print' ? printPanelHTML : '-';
                     
-                    // --- END MODIFICATION ---
-
                     let actionBtn = '';
                     if(isEditMode) {
                         actionBtn = `<td class="text-center no-print whitespace-nowrap">
@@ -1074,6 +1113,7 @@
                     }
 
                     document.getElementById('cuttNo').value = data.cuttNo;
+                    document.getElementById('aqcName').value = data.aqcName || "";
                     document.getElementById('remarks').value = data.remarks || '';
 
                     document.getElementById('container_complete').innerHTML = '';
