@@ -79,7 +79,7 @@
             width: 4.5cm;
             height: 1.5cm;
             border: 1px solid black;
-            padding: 1mm 2mm;
+            padding: 0; /* Padding removed to fit table */
             box-sizing: border-box;
             font-family: Arial, sans-serif;
             background: white;
@@ -87,22 +87,29 @@
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
-            margin-bottom: 5px; /* Spacing for screen view */
+            margin-bottom: 5px; 
             margin-right: 5px;
         }
 
-        .label-row {
-            white-space: nowrap;
-            line-height: 1.1;
+        /* Internal Label Table Styling */
+        .lbl-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            font-size: 7pt; /* Font size adjusted for table */
         }
-
-        .label-bold {
+        .lbl-table td {
+            border: 1px solid black;
+            padding: 0 3px;
+            vertical-align: middle;
+        }
+        .lbl-head-col {
             font-weight: bold;
-            font-size: 8pt; /* Slightly adjusted for fit */
+            text-align: center;
+            background-color: #f0f0f0;
         }
-
-        .label-text {
-            font-size: 7pt;
+        @media print {
+            .lbl-head-col { background-color: transparent !important; }
         }
 
         /* Print Header - Hidden on Screen */
@@ -149,6 +156,20 @@
                 text-align: center;
                 margin-bottom: 10px;
                 border-bottom: 1px solid black;
+                padding-bottom: 10px;
+            }
+
+            /* Custom Print Header Styles */
+            #sectionReport.active .print-header h1 {
+                margin: 0;
+                font-size: 24pt;
+                font-weight: bold;
+                line-height: 1.2;
+            }
+            #sectionReport.active .print-header h2 {
+                margin: 2px 0;
+                font-size: 16pt;
+                font-weight: normal;
             }
             
             #sectionReport.active table {
@@ -166,16 +187,16 @@
             #sectionLabels.active .label-grid-container {
                 display: flex !important;
                 flex-wrap: wrap;
-                gap: 0; /* Remove gap for print to fit more or control precisely */
+                gap: 0; 
                 padding: 0;
                 margin: 0;
             }
 
             #sectionLabels.active .label-box {
-                margin: 0.1cm; /* Small margin between labels on paper */
+                margin: 0.1cm; 
                 break-inside: avoid;
                 page-break-inside: avoid;
-                border: 1px solid black !important; /* Ensure border prints */
+                border: 1px solid black !important;
             }
         }
     </style>
@@ -224,11 +245,11 @@
         </div>
     </div>
 
-    <!-- REPORT PRINT HEADER -->
+    <!-- REPORT PRINT HEADER (UPDATED) -->
     <div class="print-header">
         <h1>FAKHRUDDIN TEXTILE MILLS LTD</h1>
         <h2>Kewa, Sreepur, Gazipur</h2>
-        <h2 style="text-decoration: underline; margin-top:5px;">Measurement Tape Calibration</h2>
+        <h2 style="text-decoration: underline;">Measurement Tape Calibration</h2>
     </div>
 
     <div class="container">
@@ -575,7 +596,7 @@
             updateEditModeUI();
         }
 
-        // --- LABEL GENERATION (NEW LOGIC) ---
+        // --- LABEL GENERATION (UPDATED WITH TABLE LAYOUT) ---
         window.showLabelView = function() {
             if (!window.currentFilteredData.length) {
                 alert("Please generate a report first!");
@@ -588,11 +609,24 @@
             window.currentFilteredData.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.className = 'label-box';
+                // Using a table for grid/box layout inside label
                 div.innerHTML = `
-                    <div class="label-row label-bold">Certified: ISO-9001, SL ${i+1}</div>
-                    <div class="label-row label-text">Calibrated Date: ${item.calibratedDate}</div>
-                    <div class="label-row label-text">Expired Date: ${item.expiredDate}</div>
-                    <div class="label-row label-text">Approved By: ________________</div>
+                    <table class="lbl-table">
+                        <tr>
+                            <td class="lbl-head-col">Certified</td>
+                            <td class="lbl-head-col">ISO-9001</td>
+                            <td class="lbl-head-col">SL NO: ${i+1}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Calibrated Date: <b>${item.calibratedDate}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Expired Date: <b>${item.expiredDate}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Approved By:</td>
+                        </tr>
+                    </table>
                 `;
                 grid.appendChild(div);
             });
