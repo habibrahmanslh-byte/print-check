@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tape Calibration App</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --bg-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Card Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #f0f0f0;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 700;
+            color: var(--primary-color);
+            padding: 15px 20px;
+        }
+
+        /* Custom Buttons */
+        .btn-custom {
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* View Sections */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        
+        /* Edit Mode Indicator */
+        .edit-mode-indicator {
+            background-color: #ffc107;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* ================= LABEL STYLING (SCREEN & PRINT) ================= */
+        /* Container for labels to display as grid */
+        .label-grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: flex-start;
+            padding: 10px;
+            background: white;
+        }
+
+        /* The Box Itself - 4.5cm x 1.5cm */
+        .label-box {
+            width: 4.5cm;
+            height: 1.5cm;
+            border: 1px solid black;
+            padding: 1mm 2mm;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-bottom: 5px; /* Spacing for screen view */
+            margin-right: 5px;
+        }
+
+        .label-row {
+            white-space: nowrap;
+            line-height: 1.1;
+        }
+
+        .label-bold {
+            font-weight: bold;
+            font-size: 8pt; /* Slightly adjusted for fit */
+        }
+
+        .label-text {
+            font-size: 7pt;
+        }
+
+        /* Print Header - Hidden on Screen */
+        .print-header { display: none; }
+
+        /* ================= PRINT STYLES ================= */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0.5cm;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: white;
+            }
+
+            .no-print, .navbar, .btn, .card-header { 
+                display: none !important; 
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* LOGIC: Print ONLY the section that is currently ACTIVE */
+            .view-section { display: none !important; }
+            .view-section.active { display: block !important; }
+
+            /* --- IF PRINTING REPORT TABLE --- */
+            #sectionReport.active .print-header {
+                display: block;
+                text-align: center;
+                margin-bottom: 10px;
+                border-bottom: 1px solid black;
+            }
+            
+            #sectionReport.active table {
+                width: 100% !important;
+                font-size: 10pt;
+                border-collapse: collapse;
+            }
+            
+            #sectionReport.active th, #sectionReport.active td {
+                border: 1px solid black !important;
+                padding: 4px;
+            }
+
+            /* --- IF PRINTING LABELS --- */
+            #sectionLabels.active .label-grid-container {
+                display: flex !important;
+                flex-wrap: wrap;
+                gap: 0; /* Remove gap for print to fit more or control precisely */
+                padding: 0;
+                margin: 0;
+            }
+
+            #sectionLabels.active .label-box {
+                margin: 0.1cm; /* Small margin between labels on paper */
+                break-inside: avoid;
+                page-break-inside: avoid;
+                border: 1px solid black !important; /* Ensure border prints */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" onclick="showSection('sectionInput')">
+                <i class="fa-solid fa-ruler-combined me-2"></i>Tape Calibration
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="menuButton" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-bars me-2"></i>Menu
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="showSection('sectionInput')">Home (Input)</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showSection('sectionReport')">Report List</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="openEditMenu()">Edit Data</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="showSection('sectionSettings')">Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Password Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" class="form-control" id="passwordInput" placeholder="Enter password" onkeypress="handlePasswordKeyPress(event)">
+                    <div class="text-danger mt-2" id="passwordError" style="display:none;">Incorrect password!</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="checkPassword()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORT PRINT HEADER -->
+    <div class="print-header">
+        <h1>FAKHRUDDIN TEXTILE MILLS LTD</h1>
+        <h2>Kewa, Sreepur, Gazipur</h2>
+        <h2 style="text-decoration: underline; margin-top:5px;">Measurement Tape Calibration</h2>
+    </div>
+
+    <div class="container">
+        
+        <!-- ================= 1. INPUT SECTION ================= -->
+        <div id="sectionInput" class="view-section active">
+            <div class="card no-print col-md-8 mx-auto">
+                <div class="card-header"><i class="fa-solid fa-plus-circle me-2"></i>Add New Calibration</div>
+                <div class="card-body p-4">
+                    <form id="addForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Name</label>
+                                <select class="form-select" id="inputName" required><option value="" disabled>Select Name</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">ID No</label>
+                                <input type="text" class="form-control" id="inputId" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Designation</label>
+                                <select class="form-select" id="inputDesig" required><option value="" disabled>Select Designation</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Calibrated Date</label>
+                                <input type="date" class="form-control" id="inputCalDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Expired Date</label>
+                                <input type="date" class="form-control" id="inputExpDate" required>
+                            </div>
+                            <div class="col-12 mt-4 text-center">
+                                <button type="submit" class="btn btn-primary btn-custom w-100">Save Data</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 2. REPORT SECTION (Table) ================= -->
+        <div id="sectionReport" class="view-section">
+            <!-- Filter -->
+            <div class="card no-print">
+                <div class="card-header">
+                    <span><i class="fa-solid fa-filter me-2"></i>Filter Report</span>
+                    <span class="edit-mode-indicator" id="reportEditIndicator" style="float:right; display:none;">Edit Mode Active</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3"><input type="date" class="form-control" id="filterDateFrom"></div>
+                        <div class="col-md-3"><input type="date" class="form-control" id="filterDateTo"></div>
+                        <div class="col-md-2"><input type="text" class="form-control" id="filterName" placeholder="Name"></div>
+                        <div class="col-md-2"><input type="text" class="form-control" id="filterId" placeholder="ID"></div>
+                        <div class="col-md-2"><input type="text" class="form-control" id="filterDesig" placeholder="Designation"></div>
+                        <div class="col-12 text-center mt-3">
+                            <button onclick="filterData()" class="btn btn-success btn-custom">Generate Report</button>
+                            <button onclick="enableEditMode()" class="btn btn-warning btn-custom ms-2" id="editModeBtn">Edit Mode</button>
+                            <button onclick="disableEditMode()" class="btn btn-secondary btn-custom ms-2" id="disableEditModeBtn" style="display:none;">Exit Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Result -->
+            <div id="reportContainer" style="display:none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center no-print">
+                        <span><i class="fa-solid fa-table me-2"></i>Result</span>
+                        <div>
+                            <!-- BUTTONS -->
+                            <button onclick="showLabelView()" class="btn btn-info btn-sm me-2 text-white">
+                                <i class="fa-solid fa-tags"></i> Create Labels
+                            </button>
+                            <button onclick="printCurrentView()" class="btn btn-dark btn-sm me-2">
+                                <i class="fa-solid fa-print"></i> Print Report
+                            </button>
+                            <button onclick="exportToExcel()" class="btn btn-success btn-sm">
+                                <i class="fa-solid fa-file-excel"></i> Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped text-center align-middle" id="reportTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Sl No</th>
+                                        <th>Name</th>
+                                        <th>ID No</th>
+                                        <th>Designation</th>
+                                        <th>Calibrated Date</th>
+                                        <th>Expired Date</th>
+                                        <th>Signature</th>
+                                        <th class="no-print action-col" style="display:none;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="noDataMsg" class="text-center text-muted p-3" style="display:none;">No data found.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 3. LABEL VIEW SECTION (Small Boxes) ================= -->
+        <div id="sectionLabels" class="view-section">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center no-print">
+                    <span><i class="fa-solid fa-tags me-2"></i>Labels Preview</span>
+                    <div>
+                        <button onclick="showSection('sectionReport')" class="btn btn-secondary btn-sm me-2">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button onclick="printCurrentView()" class="btn btn-dark btn-sm">
+                            <i class="fa-solid fa-print"></i> Print Labels
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="alert alert-info no-print">
+                        <small>Note: These boxes are 4.5cm x 1.5cm. Use A4 paper to print.</small>
+                    </div>
+                    <!-- Grid for Labels -->
+                    <div id="labelGrid" class="label-grid-container">
+                        <!-- Labels will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 4. EDIT FORM SECTION ================= -->
+        <div id="editContainer" class="view-section" style="display:none;">
+            <div class="card">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between">
+                    <span>Edit Data</span>
+                    <button class="btn btn-sm btn-outline-dark" onclick="cancelEdit()">Back</button>
+                </div>
+                <div class="card-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                                <select class="form-select" id="editName" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>ID No</label>
+                                <input type="text" class="form-control" id="editIdNo" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Designation</label>
+                                <select class="form-select" id="editDesignation" required></select>
+                            </div>
+                            <div class="col-md-6"><label>Calibrated Date</label><input type="date" class="form-control" id="editCalDate" required></div>
+                            <div class="col-md-6"><label>Expired Date</label><input type="date" class="form-control" id="editExpDate" required></div>
+                            <div class="col-12 mt-3 text-center">
+                                <button type="submit" class="btn btn-warning">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 5. SETTINGS SECTION ================= -->
+        <div id="sectionSettings" class="view-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">Manage Names</div>
+                        <div class="card-body">
+                            <div class="input-group mb-2">
+                                <input type="text" id="newInputName" class="form-control" placeholder="New name">
+                                <button class="btn btn-success" onclick="addItem('names')">Add</button>
+                            </div>
+                            <ul class="list-group" id="listNames" style="max-height:300px; overflow-y:auto;"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">Manage Designations</div>
+                        <div class="card-body">
+                            <div class="input-group mb-2">
+                                <input type="text" id="newInputDesig" class="form-control" placeholder="New designation">
+                                <button class="btn btn-warning" onclick="addItem('designations')">Add</button>
+                            </div>
+                            <ul class="list-group" id="listDesig" style="max-height:300px; overflow-y:auto;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8cuP3LsgPEVjMje1IleDW251Ptq7YQbw",
+            authDomain: "calibration-1acbd.firebaseapp.com",
+            projectId: "calibration-1acbd",
+            storageBucket: "calibration-1acbd.firebasestorage.app",
+            messagingSenderId: "735845234364",
+            appId: "1:735845234364:web:dd4b20a920c415c9d6c2b9",
+            measurementId: "G-MGYDFRZLYY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const settingsDocRef = doc(db, "settings", "dropdown_lists");
+
+        // Global Vars
+        window.currentData = [];
+        window.currentFilteredData = [];
+        window.isEditMode = false;
+        const EDIT_PASSWORD = "9988";
+
+        // --- NAVIGATION ---
+        window.showSection = function(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // If leaving settings, clear inputs
+            if (id !== 'sectionSettings') {
+                document.getElementById('newInputName').value = '';
+                document.getElementById('newInputDesig').value = '';
+            }
+            
+            // If entering report, standard view
+            if (id === 'sectionReport') {
+                document.getElementById('reportContainer').style.display = 'block';
+                isEditMode = false;
+                updateEditModeUI();
+            }
+        };
+
+        // --- PASSWORD ---
+        window.openEditMenu = function() {
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        };
+        window.checkPassword = function() {
+            if (document.getElementById('passwordInput').value === EDIT_PASSWORD) {
+                showSection('sectionReport');
+                enableEditMode();
+                bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        };
+
+        // --- EDIT MODE ---
+        window.updateEditModeUI = function() {
+            const ind = document.getElementById('reportEditIndicator');
+            const btnOn = document.getElementById('editModeBtn');
+            const btnOff = document.getElementById('disableEditModeBtn');
+            const actHeads = document.querySelectorAll('.action-col');
+            const actCells = document.querySelectorAll('.action-cell');
+
+            if (isEditMode) {
+                if(ind) ind.style.display = 'inline-block';
+                if(btnOn) btnOn.style.display = 'none';
+                if(btnOff) btnOff.style.display = 'inline-block';
+                actHeads.forEach(h => h.style.display = 'table-cell');
+                actCells.forEach(c => c.style.display = 'table-cell');
+            } else {
+                if(ind) ind.style.display = 'none';
+                if(btnOn) btnOn.style.display = 'inline-block';
+                if(btnOff) btnOff.style.display = 'none';
+                actHeads.forEach(h => h.style.display = 'none');
+                actCells.forEach(c => c.style.display = 'none');
+            }
+        };
+
+        window.enableEditMode = function() { isEditMode = true; renderTable(); alert("Edit Mode Enabled"); };
+        window.disableEditMode = function() { isEditMode = false; renderTable(); alert("Edit Mode Disabled"); };
+
+        // --- DATA FETCH & RENDER ---
+        window.filterData = async function() {
+            const container = document.getElementById('reportContainer');
+            container.style.display = 'block';
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="text-center"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>';
+
+            const q = query(collection(db, "calibrations"), orderBy("calibratedDate", "desc"));
+            const snapshot = await getDocs(q);
+            window.currentData = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
+
+            const fName = document.getElementById('filterName').value.toLowerCase();
+            const fId = document.getElementById('filterId').value.toLowerCase();
+            const fDesig = document.getElementById('filterDesig').value.toLowerCase();
+            const fFrom = document.getElementById('filterDateFrom').value;
+            const fTo = document.getElementById('filterDateTo').value;
+
+            window.currentFilteredData = window.currentData.filter(item => {
+                const mName = (item.name || "").toLowerCase().includes(fName);
+                const mId = (item.idNo || "").toLowerCase().includes(fId);
+                const mDesig = (item.designation || "").toLowerCase().includes(fDesig);
+                let mDate = true;
+                if (fFrom && fTo) mDate = item.calibratedDate >= fFrom && item.calibratedDate <= fTo;
+                return mName && mId && mDesig && mDate;
+            });
+
+            renderTable();
+        };
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const noData = document.getElementById('noDataMsg');
+            tbody.innerHTML = '';
+            
+            if (window.currentFilteredData.length === 0) {
+                noData.style.display = 'block';
+                return;
+            }
+            noData.style.display = 'none';
+
+            window.currentFilteredData.forEach((item, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i+1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.idNo}</td>
+                    <td>${item.designation}</td>
+                    <td>${item.calibratedDate}</td>
+                    <td>${item.expiredDate}</td>
+                    <td style="height:30px; border-bottom:1px dotted #ccc"></td>
+                    <td class="no-print action-cell" style="display:${isEditMode?'table-cell':'none'}">
+                        <button class="btn btn-warning btn-sm me-1" onclick="editItem('${i}')"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="delItem('${i}')"><i class="fa fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateEditModeUI();
+        }
+
+        // --- LABEL GENERATION (NEW LOGIC) ---
+        window.showLabelView = function() {
+            if (!window.currentFilteredData.length) {
+                alert("Please generate a report first!");
+                return;
+            }
+            
+            const grid = document.getElementById('labelGrid');
+            grid.innerHTML = '';
+
+            window.currentFilteredData.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'label-box';
+                div.innerHTML = `
+                    <div class="label-row label-bold">Certified: ISO-9001, SL ${i+1}</div>
+                    <div class="label-row label-text">Calibrated Date: ${item.calibratedDate}</div>
+                    <div class="label-row label-text">Expired Date: ${item.expiredDate}</div>
+                    <div class="label-row label-text">Approved By: ________________</div>
+                `;
+                grid.appendChild(div);
+            });
+
+            showSection('sectionLabels'); // Switch to Label View
+        };
+
+        window.printCurrentView = function() {
+            window.print();
+        };
+
+        // --- CRUD OPERATIONS ---
+        // Add
+        document.getElementById('addForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true; btn.innerText = "Saving...";
+            try {
+                await addDoc(collection(db, "calibrations"), {
+                    name: document.getElementById('inputName').value,
+                    idNo: document.getElementById('inputId').value,
+                    designation: document.getElementById('inputDesig').value,
+                    calibratedDate: document.getElementById('inputCalDate').value,
+                    expiredDate: document.getElementById('inputExpDate').value
+                });
+                alert("Saved!"); e.target.reset();
+            } catch(e) { alert(e.message); }
+            btn.disabled = false; btn.innerText = "Save Data";
+        });
+
+        // Edit
+        window.editItem = function(index) {
+            const item = window.currentFilteredData[index];
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editName').value = item.name;
+            document.getElementById('editIdNo').value = item.idNo;
+            document.getElementById('editDesignation').value = item.designation;
+            document.getElementById('editCalDate').value = item.calibratedDate;
+            document.getElementById('editExpDate').value = item.expiredDate;
+            
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('editContainer').classList.add('active');
+        };
+
+        window.cancelEdit = function() { showSection('sectionReport'); };
+
+        document.getElementById('editForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            try {
+                const id = document.getElementById('editId').value;
+                await updateDoc(doc(db, "calibrations", id), {
+                    name: document.getElementById('editName').value,
+                    idNo: document.getElementById('editIdNo').value,
+                    designation: document.getElementById('editDesignation').value,
+                    calibratedDate: document.getElementById('editCalDate').value,
+                    expiredDate: document.getElementById('editExpDate').value
+                });
+                alert("Updated!");
+                showSection('sectionReport');
+                filterData();
+            } catch(e) { alert(e.message); }
+        });
+
+        // Delete
+        window.delItem = async function(index) {
+            if(!confirm("Delete?")) return;
+            try {
+                await deleteDoc(doc(db, "calibrations", window.currentFilteredData[index].id));
+                filterData();
+            } catch(e) { alert(e.message); }
+        };
+
+        // --- DROPDOWN LOGIC ---
+        onSnapshot(settingsDocRef, (snap) => {
+            const d = snap.exists() ? snap.data() : {names:[], designations:[]};
+            updateDrops(d.names||[], d.designations||[]);
+        });
+
+        function updateDrops(names, desigs) {
+            const nSelect = document.getElementById('inputName');
+            const enSelect = document.getElementById('editName');
+            const dSelect = document.getElementById('inputDesig');
+            const edSelect = document.getElementById('editDesignation');
+            const nList = document.getElementById('listNames');
+            const dList = document.getElementById('listDesig');
+
+            // Populate Selects
+            [nSelect, enSelect].forEach(s => {
+                const v = s.value;
+                s.innerHTML = '<option value="" disabled selected>Select Name</option>';
+                names.sort().forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
+                if(names.includes(v)) s.value = v;
+            });
+
+            [dSelect, edSelect].forEach(s => {
+                const v = s.value;
+                s.innerHTML = '<option value="" disabled selected>Select Designation</option>';
+                desigs.sort().forEach(d => s.innerHTML += `<option value="${d}">${d}</option>`);
+                if(desigs.includes(v)) s.value = v;
+            });
+
+            // Populate Settings Lists
+            nList.innerHTML = names.map(n => `<li class="list-group-item d-flex justify-content-between">${n} <button class="btn btn-sm text-danger" onclick="remItem('names','${n}')">x</button></li>`).join('');
+            dList.innerHTML = desigs.map(d => `<li class="list-group-item d-flex justify-content-between">${d} <button class="btn btn-sm text-danger" onclick="remItem('designations','${d}')">x</button></li>`).join('');
+        }
+
+        window.addItem = async function(field) {
+            const id = field === 'names' ? 'newInputName' : 'newInputDesig';
+            const val = document.getElementById(id).value.trim().toUpperCase();
+            if(val) await setDoc(settingsDocRef, {[field]: arrayUnion(val)}, {merge:true});
+            document.getElementById(id).value = '';
+        };
+
+        window.remItem = async function(field, val) {
+            if(confirm("Remove?")) await updateDoc(settingsDocRef, {[field]: arrayRemove(val)});
+        };
+
+        // --- EXCEL ---
+        window.exportToExcel = function() {
+            const table = document.getElementById('reportTable').cloneNode(true);
+            // clean table for export (remove actions)
+            if(table.rows[0].cells.length > 7) {
+                for(let r of table.rows) r.deleteCell(-1);
+            }
+            XLSX.writeFile(XLSX.utils.table_to_book(table), 'Report.xlsx');
+        };
+
+    </script>
+</body>
+</html>
