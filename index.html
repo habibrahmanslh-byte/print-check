@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUTTING QAD</title>
+    <title>CUTTING QAD DASHBOARD</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Modern Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Variables for easier theme management */
+        /* CSS Variables */
         :root {
-            --primary-color: #4a69bd;
-            --secondary-color: #1abc9c;
-            --background-gradient: linear-gradient(135deg, #6a82fb, #fc5c7d);
-            --text-dark: #2c3e50;
-            --text-light: #7f8c8d;
-            --container-bg: rgba(255, 255, 255, 0.98);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --border-radius: 15px;
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --background-gradient: linear-gradient(135deg, #4361ee 0%, #f72585 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: #ffffff;
+            --text-dark: #2b2d42;
+            --text-light: #8d99ae;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
@@ -30,19 +37,29 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* Center vertically on desktop */
             padding: 20px;
+            color: var(--text-dark);
         }
 
+        /* --- Main App Container --- */
         .app-container {
             width: 100%;
-            max-width: 800px; /* Increased max-width for desktop */
-            background: var(--container-bg);
+            max-width: 1200px; /* Increased for better desktop view */
+            background: var(--glass-bg);
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- Navigation Bar --- */
@@ -50,55 +67,195 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            background: #ffffff;
-            border-bottom: 1px solid #eee;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .navbar-brand {
             display: flex;
             align-items: center;
+            gap: 15px;
         }
 
         .logo {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: var(--primary-color);
             color: white;
-            border-radius: 50%;
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            font-size: 16px;
-            margin-right: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
         }
         
         .navbar-brand h2 {
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 700;
             color: var(--text-dark);
+            letter-spacing: -0.5px;
         }
 
         .menu-toggle {
-            background: none;
+            background: transparent;
             border: none;
             cursor: pointer;
             font-size: 24px;
             color: var(--text-dark);
+            transition: transform 0.2s;
+            padding: 5px;
+        }
+
+        .menu-toggle:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
         }
         
-        /* --- Slide Out Menu (for file links) --- */
+        /* --- Header Section --- */
+        .header {
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(to right, #4361ee, #f72585);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Main Content (Grid) --- */
+        .content {
+            padding: 30px;
+        }
+
+        .button-grid {
+            display: grid;
+            /* Auto-fit creates responsive columns automatically */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px;
+        }
+        
+        /* --- App Button Card --- */
+        .app-button {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            transition: background 0.3s;
+        }
+
+        .app-button:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(67, 97, 238, 0.2);
+        }
+
+        /* Hover border effect based on color classes (optional visual flair) */
+        .app-button:hover::before {
+            background: var(--primary-color);
+        }
+
+        .button-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .button-text {
+            flex: 1;
+        }
+
+        .button-text h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .button-text p {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .app-button i.fa-chevron-right {
+            font-size: 14px;
+            color: #d1d5db;
+            transition: transform 0.3s;
+        }
+
+        .app-button:hover i.fa-chevron-right {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-light);
+            font-size: 13px;
+            background: rgba(248, 249, 250, 0.5);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* --- Slide Out Menu --- */
         .slide-out-menu {
             position: fixed;
             top: 0;
-            right: -100%; /* Initially hidden */
-            width: 300px;
+            right: -100%;
+            width: 320px;
             height: 100%;
-            background: #fff;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+            background: #ffffff;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.2);
             transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 1001;
-            padding: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
         }
         
         .slide-out-menu.is-open {
@@ -109,32 +266,45 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f1f5f9;
             padding-bottom: 15px;
         }
 
         .menu-header h3 {
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 600;
             color: var(--text-dark);
         }
 
         #closeMenuBtn {
-            background: none;
+            background: #f1f5f9;
             border: none;
-            font-size: 22px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 16px;
             cursor: pointer;
-            color: #95a5a6;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #closeMenuBtn:hover {
+            background: #e2e8f0;
+            color: #ef233c;
         }
         
-        /* Overlay for when menu is open */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(3px);
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s, visibility 0.4s;
@@ -146,168 +316,82 @@
             visibility: visible;
         }
 
-        /* --- Main Header --- */
-        .header {
-            padding: 40px 25px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .header p {
-            font-size: 16px;
-            color: var(--text-light);
-        }
-
-        /* --- Main Content --- */
-        .content {
-            padding: 0 25px 30px;
-        }
-
-        .button-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        /* --- App Button Styling --- */
-        .app-button {
-            display: flex;
-            align-items: center;
-            background: white;
-            border: 1px solid #eef2f7;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .app-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-
-        .button-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 20px;
-            font-size: 22px;
-            color: white;
-        }
-
-        .button-text {
-            flex: 1;
-        }
-
-        .button-text h3 {
-            font-size: 18px;
-            margin-bottom: 5px;
-            color: var(--text-dark);
-        }
-
-        .button-text p {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .link-section h3 {
-             margin-bottom: 15px;
-             display: flex;
-             align-items: center;
-        }
-
-        .link-section h3 i {
-             margin-right: 10px;
-             color: var(--primary-color);
-        }
-
+        /* Menu Inputs */
         .link-input {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .link-input input {
             flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px 0 0 8px;
+            padding: 14px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px 0 0 10px;
             font-size: 14px;
-            outline-color: var(--primary-color);
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        .link-input input:focus {
+            border-color: var(--primary-color);
         }
 
         .link-input button {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 0 20px;
-            border-radius: 0 8px 8px 0;
+            padding: 0 25px;
+            border-radius: 0 10px 10px 0;
             cursor: pointer;
             font-weight: 600;
             transition: background 0.3s;
         }
         
-        .recent-links {
-             margin-top: 20px;
+        .link-input button:hover {
+            background: var(--secondary-color);
         }
-        
+
+        /* Recent Links Tags */
         .recent-links h4 {
             font-size: 14px;
-            margin-bottom: 10px;
-            color: #7f8c8d;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
         
         .recent-link {
             display: inline-block;
-            background: #f0f3f7;
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            background: #f8f9fa;
+            color: var(--text-dark);
+            padding: 10px 18px;
+            border: 1px solid #e9ecef;
+            border-radius: 30px;
+            margin-right: 8px;
+            margin-bottom: 12px;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
+            font-weight: 500;
         }
 
         .recent-link:hover {
             background: var(--primary-color);
             color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
         }
 
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-light);
-            font-size: 12px;
-            background: #f8f9fa;
-        }
-
-        /* --- Desktop Responsive View --- */
-        @media (min-width: 768px) {
-            .app-container {
-                max-width: 850px; /* Wider for desktop */
-            }
-            .button-grid {
-                grid-template-columns: 1fr 1fr; /* Two columns for desktop */
-                gap: 25px;
-            }
-            .header {
-                 padding: 50px;
-            }
+        /* --- Responsive Typography for large screens --- */
+        @media (min-width: 992px) {
             .header h1 {
-                font-size: 36px;
+                font-size: 38px;
+            }
+            .content {
+                padding: 40px;
             }
         }
     </style>
@@ -322,79 +406,119 @@
                 <h2>Cutting QAD</h2>
             </div>
             <button class="menu-toggle" id="openMenuBtn" aria-label="Open Menu">
-                <i class="fas fa-link"></i>
+                <i class="fas fa-bars"></i>
             </button>
         </nav>
 
         <!-- Main Header -->
         <div class="header">
-            <h1>Quality Assurance Department</h1>
-            <p>Your central hub for all cutting quality checks and reports.</p>
+            <h1>Quality Assurance Dept.</h1>
+            <p>Central hub for cutting quality checks, reports, and calibration.</p>
         </div>
         
         <!-- Main Content -->
         <div class="content">
             <div class="button-grid">
+                <!-- 1. Print/Embroidery -->
                 <a href="embroidery.html" class="app-button">
-                    <div class="button-icon" style="background: #e74c3c;"><i class="fas fa-print"></i></div>
-                    <div class="button-text">
-                        <h3>Print/Embroidery Check</h3>
-                        <p>Verify print and embroidery quality standarRahman
+                    <div class="button-icon" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #d63384;">
+                        <i class="fas fa-print"></i>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <div class="button-text">
+                        <h3>Print/Embroidery</h3>
+                        <p>Verify print & embroidery quality</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                <!-- 2. Cut Panel Check -->
                 <a href="cut_panel_check.html" class="app-button">
-                    <div class="button-icon" style="background: #3498db;"><i class="fas fa-cut"></i></div>
+                    <div class="button-icon" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); color: #6f42c1;">
+                        <i class="fas fa-cut"></i>
+                    </div>
                     <div class="button-text">
                         <h3>Cut Panel Check</h3>
-                        <p>Inspect cut panels for accuracy and quality</p>
+                        <p>Inspect panels for accuracy</p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                <!-- 3. Measurement Issue (Link retained as 11.html) -->
                 <a href="11.html" class="app-button">
-                    <div class="button-icon" style="background: #2ecc71;"><i class="fas fa-ruler-combined"></i></div>
+                    <div class="button-icon" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #0ca678;">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
                     <div class="button-text">
                         <h3>Measurement Issue</h3>
-                        <p>Manage cutting measurement accuracy</p>
+                        <p>Manage cutting measurements</p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                <!-- 4. Cutting Report -->
                 <a href="cutting_report.html" class="app-button">
-                    <div class="button-icon" style="background: #9b59b6;"><i class="fas fa-chart-bar"></i></div>
+                    <div class="button-icon" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #5c7cfa;">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
                     <div class="button-text">
                         <h3>Cutting Report</h3>
-                        <p>Generate and view cutting reports</p>
+                        <p>Generate daily quality reports</p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
 
-                <!-- New Button: Received -->
+                <!-- 5. Received -->
                 <a href="rcvd.html" class="app-button">
-                    <div class="button-icon" style="background: #f39c12;"><i class="fas fa-check-circle"></i></div>
+                    <div class="button-icon" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #d97706;">
+                        <i class="fas fa-box-open"></i>
+                    </div>
                     <div class="button-text">
                         <h3>Received</h3>
-                        <p>Track and manage received items</p>
+                        <p>Track incoming items status</p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
 
-                <!-- New Button: About -->
+                <!-- 6. Calibration (NEW BUTTON) -->
+                <a href="calibration.html" class="app-button">
+                    <div class="button-icon" style="background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%); color: #fff;">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="button-text">
+                        <h3>Calibration</h3>
+                        <p>Tools & equipment calibration</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <!-- 7. Sample (NEW BUTTON) -->
+                <a href="sample.html" class="app-button">
+                    <div class="button-icon" style="background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: #fff;">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="button-text">
+                        <h3>Sample</h3>
+                        <p>Sample review and checking</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <!-- 8. About -->
                 <a href="about.html" class="app-button">
-                    <div class="button-icon" style="background: #1abc9c;"><i class="fas fa-info-circle"></i></div>
+                    <div class="button-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #0891b2;">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
                     <div class="button-text">
                         <h3>About</h3>
-                        <p>Learn more about the QA system</p>
+                        <p>System info and version</p>
                     </div>
-                    <i class="fas fa-chevron-right" style="color: #bdc3c7;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
             </div>
         </div>
         
         <div class="footer">
-            <p>CUTTING QAD &copy; 2025 | Develop by Habibur Rahaman</p>
+            <p>CUTTING QAD &copy; 2025 | Developed by Habibur Rahaman</p>
         </div>
     </div>
     
@@ -402,27 +526,29 @@
     <div class="overlay" id="overlay"></div>
     <div class="slide-out-menu" id="slideOutMenu">
          <div class="menu-header">
-            <h3>Quick File Link</h3>
+            <h3>Quick File Access</h3>
             <button id="closeMenuBtn" aria-label="Close Menu"><i class="fas fa-times"></i></button>
         </div>
+        
         <div class="link-section">
-            <p style="font-size: 14px; color: #7f8c8d; margin-bottom: 15px;">Enter a filename to quickly navigate to your file.</p>
+            <p style="font-size: 14px; color: #7f8c8d; margin-bottom: 20px;">Enter a filename to quickly navigate.</p>
             
             <div class="link-input">
-                <input type="text" id="fileInput" placeholder="e.g., report.html">
+                <input type="text" id="fileInput" placeholder="ex: report.html">
                 <button id="goButton">GO</button>
             </div>
             
             <div class="recent-links">
-                <h4>Recent Files:</h4>
-                <div class="recent-link" data-file="daily_report.html">daily_report.html</div>
-                <div class="recent-link" data-file="quality_check.html">quality_check.html</div>
-                <div class="recent-link" data-file="inventory.html">inventory.html</div>
+                <h4>Quick Links:</h4>
+                <div class="recent-link" data-file="daily_report.html">daily_report</div>
+                <div class="recent-link" data-file="quality_check.html">quality_check</div>
+                <div class="recent-link" data-file="inventory.html">inventory</div>
+                <div class="recent-link" data-file="calibration.html">calibration</div>
             </div>
         </div>
     </div>
 
-
+    <!-- Original JavaScript Logic Kept Intact -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const openMenuBtn = document.getElementById('openMenuBtn');
