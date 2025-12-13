@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>গ্রোথ কোচিং সেন্টার | SSC 2026 স্পেশাল প্রস্তুতি</title>
+    <!-- ফন্ট আইকন -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* বেসিক রিসেট */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SolaimanLipi', sans-serif;
+        }
+
+        :root {
+            --primary-color: #242650;
+            --secondary-color: #F8B62D;
+            --text-color: #333;
+            --white: #fff;
+            --light-bg: #f4f6f9;
+            --footer-bg: #1a1c3d;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* হেডার স্টাইল */
+        header {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header .container {
+            width: 96%;
+            max-width: 1400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 55px;
+            width: auto;
+            background: transparent;
+            padding: 0;
+            border: none;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            color: var(--secondary-color);
+            line-height: 1.2;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 span {
+            color: var(--white);
+            font-size: 22px;
+            margin-left: 6px;
+            display: inline;
+        }
+
+        /* নেভিগেশন স্টাইল */
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .btn-nav {
+            background: var(--secondary-color);
+            color: var(--primary-color) !important;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        /* মোবাইল মেনু টগল আইকন */
+        .menu-toggle {
+            display: none;
+            color: var(--white);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* হিরো সেকশন */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 60%, #1a1c3d 100%);
+            color: var(--white);
+            padding: 80px 0 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-content h2, .hero-content p, .badge, .offer-text {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .hero-title-wrapper {
+            margin-bottom: 25px;
+        }
+
+        .ssc-highlight {
+            font-size: 4.5rem;
+            font-weight: 900;
+            display: block;
+            background: linear-gradient(to bottom, #F8B62D, #fff176, #F8B62D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 5px 15px rgba(248, 182, 45, 0.2);
+            line-height: 1;
+            margin-bottom: 10px;
+            font-family: 'Arial Black', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .course-highlight {
+            font-size: 2.2rem;
+            color: #fff;
+            display: inline-block;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            padding-bottom: 10px;
+        }
+
+        .course-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .hero-content .hero-title-wrapper { animation-delay: 0.2s; }
+        .hero-content > p:nth-of-type(1) { animation-delay: 0.4s; }
+        .badge { animation-delay: 0.6s; }
+        .offer-text { animation-delay: 0.8s; }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        /* ----- badge ক্লাসের পরিবর্তন ----- */
+        .badge {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            transform: rotate(-3deg);
+            border: 3px solid var(--secondary-color);
+            margin-bottom: 20px;
+            
+            /* নতুন স্টাইল যোগ করা হয়েছে */
+            text-decoration: none; /* লিংক এর আন্ডারলাইন রিমুভ */
+            cursor: pointer; /* মাউস কার্সর পয়েন্টার হবে */
+            transition: all 0.3s ease; /* স্মুথ ট্রানজিশন */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* হোভার ইফেক্ট */
+        .badge:hover {
+            transform: rotate(0deg) scale(1.05); /* সোজা হবে এবং একটু বড় হবে */
+            background: var(--secondary-color); /* ব্যাকগ্রাউন্ড গোল্ডেন হবে */
+            color: var(--primary-color);
+            box-shadow: 0 6px 15px rgba(248, 182, 45, 0.4);
+        }
+        /* ----- badge ক্লাসের পরিবর্তন শেষ ----- */
+
+        .offer-text {
+            color: var(--secondary-color) !important;
+            font-weight: bold;
+            font-size: 1.3rem !important;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(248, 182, 45, 0.7); transform: scale(1); }
+            70% { box-shadow: 0 0 0 15px rgba(248, 182, 45, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 182, 45, 0); transform: scale(1); }
+        }
+
+        .btn-main {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 15px 35px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            margin-top: 30px;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 1s forwards, pulse-gold 2s infinite 1.8s;
+            border: 2px solid #fff;
+        }
+
+        .btn-main:hover {
+            background: #e5a524;
+            transform: translateY(-3px);
+        }
+        
+        .btn-main i { font-size: 1.3rem; }
+
+        /* মেধা যাচাই সেকশন */
+        .exam-section {
+            padding: 50px 0;
+            background: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary-color);
+            margin: 10px auto;
+        }
+
+        .exam-card {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .exam-details ul {
+            list-style: none;
+        }
+
+        .exam-details ul li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .exam-details ul li i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .reg-free {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        .highlight {
+            color: red;
+            font-size: 2rem;
+        }
+
+        .free-class-box {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 5px solid var(--secondary-color);
+        }
+
+        .free-class-box h4 {
+            font-size: 1.5rem;
+        }
+
+        /* কোর্স সেকশন */
+        .courses-section {
+            padding: 50px 0;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .course-item {
+            background: var(--white);
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            border-bottom: 4px solid var(--secondary-color);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-item:hover {
+            transform: translateY(-5px);
+            background: #fffcf5;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .course-item::before {
+            content: "বিস্তারিত দেখুন";
+            position: absolute;
+            top: 10px;
+            right: -100px;
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            border-radius: 3px;
+        }
+        
+        .course-item:hover::before {
+            right: 10px;
+        }
+
+        .course-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .course-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 1.3rem;
+        }
+
+        /* --------------------------------------
+           কোর্স ডিটেইলস মডাল (Popup) স্টাইল - আপডেটেড
+           -------------------------------------- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.8); 
+            animation: fadeIn 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 0;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            position: relative;
+            animation: slideDown 0.4s;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.6rem;
+            color: var(--secondary-color);
+        }
+
+        .close {
+            color: #fff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            color: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-feature-list {
+            margin: 20px 0;
+            background: #f4f6f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .modal-feature-list li {
+            list-style: none;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+
+        .modal-feature-list li i {
+            color: var(--secondary-color); /* গোল্ডেন কালার আইকন */
+            background: var(--primary-color);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: 12px;
+        }
+        
+        .modal-desc {
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.7;
+        }
+
+        .modal-price-tag {
+            background: #fff8e1;
+            color: var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.4rem;
+            margin: 25px 0;
+            border: 2px dashed var(--secondary-color);
+        }
+
+        .btn-enroll {
+            display: block;
+            width: 100%;
+            background: linear-gradient(45deg, var(--secondary-color), #fbc02d);
+            color: var(--primary-color);
+            text-align: center;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.3rem;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(248, 182, 45, 0.4);
+        }
+
+        .btn-enroll:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(248, 182, 45, 0.6);
+        }
+
+        @keyframes slideDown {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        /* ভর্তি ফরম স্টাইল (অপরিবর্তিত) */
+        .admission-section {
+            padding: 60px 0;
+            background: #eef2f5;
+            display: none; 
+        }
+
+        .form-wrapper {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--secondary-color);
+        }
+
+        .form-section-header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-section-header i {
+            color: var(--secondary-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .form-control {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: 0.3s;
+            background: #fdfdfd;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(248, 182, 45, 0.3);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .confirmation-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px dashed var(--secondary-color);
+        }
+
+        .confirmation-box input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            font-weight: bold;
+            border: 2px solid var(--primary-color);
+        }
+
+        .submit-btn:hover {
+            background: #fff;
+            color: var(--primary-color);
+        }
+
+        /* --------------------------------------
+           উন্নত ফুটার স্টাইল (New & Improved)
+           -------------------------------------- */
+        footer {
+            background: var(--footer-bg);
+            color: #cfd8dc;
+            padding: 60px 0 20px;
+            margin-top: 40px;
+            font-size: 0.95rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--white);
+        }
+
+        .footer-col p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .footer-links li {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #cfd8dc;
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links a i {
+            margin-right: 10px;
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+            padding-left: 5px;
+        }
+
+        .contact-info-footer li {
+            list-style: none;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .contact-info-footer i {
+            color: var(--secondary-color);
+            margin-right: 15px;
+            margin-top: 5px;
+            font-size: 1.1rem;
+        }
+
+        .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #90a4ae;
+        }
+
+        /* মোবাইল রেসপন্সিভ - আপডেট করা হয়েছে */
+        @media (max-width: 768px) {
+            header .container {
+                position: relative;
+            }
+            
+            .logo h1 { font-size: 20px; }
+            
+            /* মোবাইল মেনু ফিক্স */
+            .menu-toggle {
+                display: block;
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            nav ul {
+                display: none; /* ডিফল্টভাবে হাইড */
+                flex-direction: column;
+                width: 100%;
+                background: var(--primary-color);
+                position: absolute;
+                top: 100%; /* হেডারের ঠিক নিচে */
+                left: 0;
+                padding: 15px 0;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            }
+
+            /* ক্লাস active যোগ হলে মেনু শো করবে */
+            nav ul.active {
+                display: flex;
+                animation: slideDownMenu 0.3s ease forwards;
+            }
+            
+            @keyframes slideDownMenu {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            nav ul li { 
+                margin: 10px 0; 
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 10px;
+                width: 100%;
+            }
+
+            /* হিরো টেক্সট ছোট করা */
+            .ssc-highlight { font-size: 2.5rem; }
+            .course-highlight { font-size: 1.5rem; }
+            
+            /* ফুটার কলাম ১টি করে */
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                text-align: center;
+            }
+            
+            .footer-col h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .contact-info-footer li {
+                justify-content: center;
+            }
+            
+            .footer-links a {
+                justify-content: center;
+            }
+
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- হেডার সেকশন -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="#home" class="logo-link" onclick="showLandingPage()">
+                    <img src="https://i.postimg.cc/T3JzNMm3/20251212-135421.png" alt="Logo">
+                    <h1>গ্রোথ <span>কোচিং সেন্টার</span></h1>
+                </a>
+            </div>
+            
+            <!-- মোবাইল মেনু টগল বাটন -->
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <nav>
+                <ul id="nav-menu">
+                    <li><a href="#home" onclick="showLandingPage(); toggleMenu()">হোম</a></li>
+                    <li><a href="#" onclick="showAdmissionForm(); toggleMenu()">অনলাইন ভর্তি</a></li>
+                    <li><a href="#exam" onclick="showLandingPage(); toggleMenu()">মেধা যাচাই</a></li>
+                    <li><a href="#courses" onclick="showLandingPage(); toggleMenu()">কোর্সসমূহ</a></li>
+                    <li><a href="#contact" class="btn-nav" onclick="toggleMenu()">যোগাযোগ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="landing-page-content">
+        <!-- হিরো সেকশন -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-title-wrapper">
+                        <h2 class="ssc-highlight">SSC 2026</h2>
+                        <h2 class="course-highlight">স্পেশাল প্রস্তুতি কোর্স</h2>
+                    </div>
+                    
+                    <p>(বিজ্ঞান + মানবিক + ভোকেশনাল)</p>
+                    
+                    <!-- এখানে "ভর্তি চলছে" লেখাটিকে বাটনে রূপান্তর করা হয়েছে -->
+                    <a href="#courses" class="badge" onclick="showLandingPage()">ভর্তি চলছে</a>
+                    
+                    <p class="offer-text">২০ ডিসেম্বরের মধ্যে ভর্তি হলে ১৫০০ টাকা ছাড়!</p>
+                    
+                    <a href="tel:01737837080" class="btn-main">
+                        <i class="fas fa-phone-volume"></i> কল করুন: 01737837080
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- মেধা যাচাই পরীক্ষা -->
+        <section id="exam" class="exam-section">
+            <div class="container">
+                <h2 class="section-title">পরীক্ষা দিয়ে জিতে নাও ফ্রি কোর্স!</h2>
+                <div class="exam-card">
+                    <div class="exam-details">
+                        <h3>মেধা যাচাই পরীক্ষা</h3>
+                        <ul>
+                            <li><i class="fas fa-book"></i> বিষয়: বাংলা, ইংরেজি ও গণিত</li>
+                            <li><i class="fas fa-trophy"></i> ১ম, ২য় ও ৩য় বিজয়ীদের জন্য আকর্ষণীয় পুরস্কার</li>
+                            <li><i class="fas fa-gift"></i> ফ্রি কোর্স করার সুযোগ</li>
+                            <li><i class="fas fa-calendar-alt"></i> <strong>পরীক্ষা: ১৯ ডিসেম্বর, ২০২৫</strong></li>
+                        </ul>
+                        <div class="reg-free">
+                            রেজিস্ট্রেশন ফি: <span class="highlight">ফ্রি</span>
+                        </div>
+                    </div>
+                    <div class="free-class-box">
+                        <h4>ফ্রি ক্লাস</h4>
+                        <p>২০ - ২৩ ডিসেম্বর</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- কোর্স সেকশন (আপডেট: আইডি পাস করা হচ্ছে) -->
+        <section id="courses" class="courses-section">
+            <div class="container">
+                <h2 class="section-title">আমাদের কোর্সসমূহ</h2>
+                <p style="text-align: center; margin-bottom: 30px; color: #666;">বিস্তারিত জানতে নিচের কার্ডগুলোতে ক্লিক করুন</p>
+                
+                <div class="course-grid">
+                    <div class="course-item" onclick="openCourseDetails('class5to8')">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3>পঞ্চম - অষ্টম</h3>
+                        <p>একাডেমিক ব্যাচ</p>
+                    </div>
+
+                    <div class="course-item" onclick="openCourseDetails('hsc')">
+                        <i class="fas fa-book-reader"></i>
+                        <h3>দ্বাদশ প্রস্তুতি ব্যাচ</h3>
+                        <p>এইচএসসি স্পেশাল</p>
+                    </div>
+
+                    <div class="course-item" onclick="openCourseDetails('scholarship')">
+                        <i class="fas fa-star"></i>
+                        <h3>পঞ্চম বৃত্তি ব্যাচ</h3>
+                        <p>বিশেষ যত্ন সহকারে</p>
+                    </div>
+
+                    <div class="course-item" onclick="openCourseDetails('ssc')">
+                        <i class="fas fa-award"></i>
+                        <h3>SSC 2026</h3>
+                        <p>স্পেশাল প্রস্তুতি</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- উন্নত কোর্স ডিটেইলস মডাল -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">কোর্সের নাম</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modalDesc" class="modal-desc">কোর্সের বিবরণ...</p>
+                
+                <!-- ডাইনামিক ফিচার লিস্ট এখানে লোড হবে -->
+                <ul id="modalFeatures" class="modal-feature-list"></ul>
+                
+                <div class="modal-price-tag">
+                    কোর্স ফি: <span id="modalPrice">00</span> টাকা
+                </div>
+                
+                <button class="btn-enroll" onclick="enrollFromModal()">
+                    <i class="fas fa-check-circle"></i> এখন ভর্তি হোন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- অনলাইন ভর্তি ফরম -->
+    <section id="admission" class="admission-section">
+        <div class="container">
+            <h2 class="section-title">অনলাইন ভর্তি ফরম</h2>
+            <div class="form-wrapper">
+                <form id="onlineAdmissionForm">
+                    <!-- ফরমের ফিল্ডগুলো অপরিবর্তিত রাখা হয়েছে -->
+                    <div class="form-section-header"><i class="fas fa-user"></i> ১. শিক্ষার্থীর ব্যক্তিগত তথ্য</div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>পূর্ণ নাম</label><input type="text" class="form-control" name="studentName" required></div>
+                        <div class="form-group"><label>পিতার নাম</label><input type="text" class="form-control" name="fatherName" required></div>
+                        <div class="form-group"><label>মাতার নাম</label><input type="text" class="form-control" name="motherName" required></div>
+                        <div class="form-group"><label>জন্ম তারিখ</label><input type="date" class="form-control" name="dob" required></div>
+                        <div class="form-group"><label>লিঙ্গ</label><select class="form-control" name="gender" required><option value="">নির্বাচন করুন</option><option value="Male">পুরুষ</option><option value="Female">মহিলা</option></select></div>
+                        <div class="form-group"><label>ধর্ম</label><select class="form-control" name="religion" required><option value="">নির্বাচন করুন</option><option value="Islam">ইসলাম</option><option value="Hindu">হিন্দু</option></select></div>
+                    </div>
+
+                    <div class="form-section-header"><i class="fas fa-address-book"></i> ২. যোগাযোগের তথ্য</div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>মোবাইল</label><input type="number" class="form-control" name="mobile" required></div>
+                        <div class="form-group full-width"><label>ঠিকানা</label><textarea class="form-control" name="presentAddress" rows="2" required></textarea></div>
+                    </div>
+
+                    <div class="form-section-header"><i class="fas fa-chalkboard-teacher"></i> ৩. কোর্স নির্বাচন</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>কোর্সের নাম</label>
+                            <select class="form-control" id="courseSelect" name="courseName" required onchange="updateFee()">
+                                <option value="">নির্বাচন করুন</option>
+                                <option value="SSC Special">SSC 2026 স্পেশাল</option>
+                                <option value="Class 8">একাডেমিক (৫ম-৮ম)</option>
+                                <option value="HSC Care">HSC কেয়ার</option>
+                                <option value="Scholarship">বৃত্তি স্পেশাল</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>কোর্স ফি (টাকা)</label><input type="text" class="form-control" id="courseFee" name="courseFee" readonly></div>
+                    </div>
+
+                    <div class="confirmation-box">
+                        <input type="checkbox" id="confirmData" required>
+                        <label for="confirmData">আমি সকল তথ্য সঠিকভাবে প্রদান করেছি</label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">সাবমিট করুন</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- উন্নত ফুটার সেকশন -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-container">
+                <!-- কলাম ১: লোগো ও বর্ণনা -->
+                <div class="footer-col">
+                    <div class="logo" style="margin-bottom: 20px;">
+                        <a href="#" class="logo-link">
+                            <h1 style="color: var(--secondary-color);">গ্রোথ <span>কোচিং</span></h1>
+                        </a>
+                    </div>
+                    <p>আমরা শিক্ষার্থীদের মেধার সঠিক বিকাশে বিশ্বাসী। অভিজ্ঞ শিক্ষক মণ্ডলী এবং আধুনিক পাঠদান পদ্ধতির সমন্বয়ে আমরা নিশ্চিত করি সর্বোচ্চ ফলাফল।</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- কলাম ২: দ্রুত লিঙ্ক -->
+                <div class="footer-col">
+                    <h3>দ্রুত লিঙ্ক</h3>
+                    <ul class="footer-links">
+                        <li><a href="#about-us" onclick="alert('আমাদের সম্পর্কে পেজটি শীঘ্রই আসছে!')"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+                        <li><a href="#courses"><i class="fas fa-chevron-right"></i> কোর্সসমূহ</a></li>
+                        <li><a href="#" onclick="showAdmissionForm()"><i class="fas fa-chevron-right"></i> অনলাইন ভর্তি</a></li>
+                        <li><a href="#teachers" onclick="alert('শিক্ষক পরিচিতি পেজটি শীঘ্রই আসছে!')"><i class="fas fa-chevron-right"></i> শিক্ষক পরিচিতি</a></li>
+                        <li><a href="#gallery" onclick="alert('গ্যালারি পেজটি শীঘ্রই আসছে!')"><i class="fas fa-chevron-right"></i> গ্যালারি</a></li>
+                    </ul>
+                </div>
+
+                <!-- কলাম ৩: গুরুত্বপূর্ণ -->
+                <div class="footer-col">
+                    <h3>গুরুত্বপূর্ণ</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> নোটিশ বোর্ড</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> ক্লাসের রুটিন</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> রেজাল্ট দেখুন</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> নিয়মাবলী</a></li>
+                    </ul>
+                </div>
+
+                <!-- কলাম ৪: যোগাযোগ -->
+                <div class="footer-col">
+                    <h3>যোগাযোগ</h3>
+                    <ul class="contact-info-footer">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>কাশিডাঙ্গা বাজার, বিরল, দিনাজপুর</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone-alt"></i>
+                            <span>01737837080</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>growthcoaching@gmail.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <span>শনি - বৃহস্পতি: সকাল ৮টা - সন্ধ্যা ৭টা</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; ২০২৫ গ্রোথ কোচিং সেন্টার | ডিজাইন ও ডেভেলপমেন্ট</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- স্ক্রিপ্ট সেকশন -->
+    <script>
+        // কোর্সের বিস্তারিত ডাটাবেজ (JavaScript Object)
+        const courseData = {
+            'class5to8': {
+                title: 'পঞ্চম - অষ্টম শ্রেণি (একাডেমিক)',
+                desc: 'এই কোর্সটি এমনভাবে সাজানো হয়েছে যেন শিক্ষার্থীদের বেসিক শক্ত হয়। দুর্বল শিক্ষার্থীদের জন্য আমরা বিশেষ ক্লাসের ব্যবস্থা রাখি।',
+                features: [
+                    'প্রতিটি বিষয়ের অধ্যায়ভিত্তিক লেকচার শিট',
+                    'দুর্বল শিক্ষার্থীদের জন্য এক্সট্রা কেয়ার ক্লাস',
+                    'সাপ্তাহিক এবং মাসিক পরীক্ষার মাধ্যমে মূল্যায়ন',
+                    'হাতের লেখা সুন্দর করার বিশেষ প্রশিক্ষণ',
+                    'অভিভাবকদের সাথে নিয়মিত যোগাযোগ'
+                ],
+                price: '৩০০০',
+                formValue: 'Class 8'
+            },
+            'hsc': {
+                title: 'এইচএসসি স্পেশাল কেয়ার',
+                desc: 'কলেজ লাইফের শুরু থেকেই বা টেস্ট পরীক্ষার পরবর্তী সময়ের জন্য সেরা প্রস্তুতি। আমরা সৃজনশীল এবং বহুনির্বাচনী উভয় অংশে সমান গুরুত্ব দেই।',
+                features: [
+                    'শর্ট ও ফুল সিলেবাস অনুযায়ী পাঠদান',
+                    'বিগত বছরের বোর্ড প্রশ্ন সমাধান',
+                    'বিশ্ববিদ্যালয় ভর্তি পরীক্ষার প্রাথমিক ধারণা',
+                    'প্র্যাকটিক্যাল ক্লাসের সুবিধা',
+                    'নিয়মিত মডেল টেস্ট'
+                ],
+                price: '৬০০০',
+                formValue: 'HSC Care'
+            },
+            'scholarship': {
+                title: 'পঞ্চম শ্রেণি বৃত্তি ব্যাচ',
+                desc: 'মেধাবী শিক্ষার্থীদের জন্য আমাদের বিশেষ আয়োজন। বৃত্তি পরীক্ষায় শতভাগ সাফল্যের জন্য আমাদের রয়েছে অভিজ্ঞ টিচার প্যানেল।',
+                features: [
+                    'স্পেশাল সাজেশন ভিত্তিক ক্লাস',
+                    'প্রতিদিন কুইজ টেস্ট',
+                    'বিগত বছরের বৃত্তি পরীক্ষার প্রশ্ন সমাধান',
+                    'সময় ব্যবস্থাপনা শেখানো',
+                    'মানসিক দক্ষতা বৃদ্ধি'
+                ],
+                price: '২৫০০',
+                formValue: 'Scholarship'
+            },
+            'ssc': {
+                title: 'SSC 2026 স্পেশাল প্রস্তুতি',
+                desc: '২০২৬ সালের পরীক্ষার্থীদের জন্য আমাদের এই ফ্ল্যাগশিপ কোর্স। বিজ্ঞান, মানবিক ও ভোকেশনাল শাখার পূর্ণাঙ্গ প্রস্তুতি এখানে নেওয়া হয়।',
+                features: [
+                    'নিশ্চিত A+ পাওয়ার গাইডলাইন',
+                    'গণিত ও ইংরেজির জন্য স্পেশাল কেয়ার',
+                    'অধ্যায়ভিত্তিক এক্সক্লুসিভ হ্যান্ডনোট',
+                    'ফাইনাল মডেল টেস্ট সিরিজ',
+                    'সলভ ক্লাস ও ডাউট ক্লিয়ারিং সেশন'
+                ],
+                price: '৫০০০',
+                formValue: 'SSC Special'
+            }
+        };
+
+        // মোবাইল মেনু টগল ফাংশন (আপডেটেড)
+        function toggleMenu() {
+            const nav = document.getElementById('nav-menu');
+            nav.classList.toggle('active');
+        }
+
+        // পেজ সুইচিং
+        function showAdmissionForm(courseValue = "") {
+            document.getElementById('landing-page-content').style.display = 'none';
+            document.getElementById('admission').style.display = 'block';
+            if(courseValue) {
+                document.getElementById('courseSelect').value = courseValue;
+                updateFee();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function showLandingPage() {
+            document.getElementById('admission').style.display = 'none';
+            document.getElementById('landing-page-content').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // ফি আপডেট
+        function updateFee() {
+            const course = document.getElementById('courseSelect').value;
+            const feeInput = document.getElementById('courseFee');
+            
+            const fees = {
+                "SSC Special": "৫০০০",
+                "Class 8": "৩০০০",
+                "HSC Care": "৬০০০",
+                "Scholarship": "২৫০০"
+            };
+            
+            feeInput.value = fees[course] || "";
+        }
+
+        // মডাল লজিক (আপডেটেড)
+        let currentSelectedCourseValue = "";
+
+        function openCourseDetails(courseKey) {
+            const data = courseData[courseKey];
+            if (!data) return;
+
+            // টেক্সট সেট করা
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalDesc').innerText = data.desc;
+            document.getElementById('modalPrice').innerText = data.price;
+            
+            // ফিচার লিস্ট তৈরি করা
+            const featureList = document.getElementById('modalFeatures');
+            featureList.innerHTML = ''; // আগের লিস্ট ক্লিয়ার
+            
+            data.features.forEach(feature => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
+                featureList.appendChild(li);
+            });
+
+            currentSelectedCourseValue = data.formValue;
+            document.getElementById('courseModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('courseModal').style.display = "none";
+        }
+
+        function enrollFromModal() {
+            closeModal();
+            showAdmissionForm(currentSelectedCourseValue);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('courseModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
